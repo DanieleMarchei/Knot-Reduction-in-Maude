@@ -17,7 +17,7 @@ fmod GAUSS-CODE is
 
     vars G G' : Gauss . 
     var NeG : NeGauss .
-    var I : Int .
+    var I K : Int .
 
     eq G ; [] = G .
     eq [] ; G = G .
@@ -29,6 +29,18 @@ fmod GAUSS-CODE is
     eq length([]) = 0 .
     eq length(I) = 1 .
     eq length(I ; G) = 1 + length(G) .
+
+    --- I is found
+    eq positionOf I in [] = -1 .
+    eq positionOf I in I = 0 .
+    eq positionOf I in I ; G = 0 .
+    eq positionOf I in G ; I = length(G) .
+    eq positionOf I in G ; (I ; G') = length(G) .
+    --- I is not found
+    eq positionOf I in K = -1 .
+    eq positionOf I in K ; G = -1 .
+    eq positionOf I in G ; K = -1 .
+    eq positionOf I in G ; (K ; G') = -1 .
 
 endfm
 
