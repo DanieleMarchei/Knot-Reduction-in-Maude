@@ -7,7 +7,7 @@ fmod GAUSS-CODE is
 
     op [] : -> Gauss [ctor] .
 
-    op _;_ : Int Int -> NeGauss [assoc prec 0 ctor] .
+    op _;_ : Int Int -> NeGauss [assoc ctor] .
     op _;_ : Int Gauss -> NeGauss [ditto] .
     op _;_ : Gauss Gauss -> Gauss [ditto] .  
 
@@ -17,19 +17,23 @@ fmod GAUSS-CODE is
 
     vars G G' : Gauss . 
     var NeG : NeGauss .
-    var I K : Int .
+    vars I K : Int .
 
+    --- concatenation is commutative if one gauss code is the empty one 
     eq G ; [] = G .
     eq [] ; G = G .
 
+    --- REMOVE OPERATION
     eq remove I from G ; I = G .
     eq remove I from I ; G = G .
     eq remove I from G ; (I ; G') = G ; G' .
 
+    --- LENGTH OPERATION
     eq length([]) = 0 .
     eq length(I) = 1 .
     eq length(I ; G) = 1 + length(G) .
 
+    --- POSITION OPERATION
     --- I is found
     eq positionOf I in I = 0 .
     eq positionOf I in I ; G = 0 .
