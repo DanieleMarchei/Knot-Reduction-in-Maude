@@ -12,6 +12,8 @@ fmod GAUSS-CODE is
     op _;_ : Gauss Gauss -> Gauss [ditto] .  
 
     op remove_from_ : Int NeGauss -> Gauss .
+    op length : Gauss -> Int .
+    op positionOf_in_ : Int NeGauss -> Int .
 
     vars G G' : Gauss . 
     var NeG : NeGauss .
@@ -19,9 +21,14 @@ fmod GAUSS-CODE is
 
     eq G ; [] = G .
     eq [] ; G = G .
+
     eq remove I from G ; I = G .
     eq remove I from I ; G = G .
     eq remove I from G ; (I ; G') = G ; G' .
+
+    eq length([]) = 0 .
+    eq length(I) = 1 .
+    eq length(I ; G) = 1 + length(G) .
 
 endfm
 
