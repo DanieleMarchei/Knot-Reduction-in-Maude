@@ -5,15 +5,24 @@ fmod GAUSS-CODE is
 
     subsorts Int < NeGauss < Gauss .
 
-    op [] : -> Gauss [ctor] .
+    op ~ : -> Gauss [ctor] .
 
-    op _;_ : Int Int -> NeGauss [assoc ctor] .
+    op _;_ : Int Int -> NeGauss [assoc id: ~ ctor] .
     op _;_ : Int Gauss -> NeGauss [ditto] .
-    op _;_ : Gauss Gauss -> Gauss [ditto] .  
+    op _;_ : Gauss Int -> NeGauss [ditto] .
+    op _;_ : Gauss Gauss -> Gauss [ditto] .
+
+    op _;_ : Int NeGauss -> NeGauss [ditto] .
+    op _;_ : NeGauss Int -> NeGauss [ditto] .
+    op _;_ : NeGauss NeGauss -> NeGauss [ditto] .
+
+    op _;_ : NeGauss Gauss -> NeGauss [ditto] .
+    op _;_ : Gauss NeGauss -> NeGauss [ditto] .
+
 
     op remove_from_ : Int NeGauss -> Gauss .
     op length : Gauss -> Int .
-    op positionOf_in_ : Int NeGauss -> Int .
+    op positionOf_in_ : Int Gauss -> Int .
     op add_in_to_ : Int Int Gauss -> NeGauss .
     op move_to_in_ : Int Int NeGauss -> NeGauss .
 
@@ -21,17 +30,13 @@ fmod GAUSS-CODE is
     var NeG : NeGauss .
     vars I K : Int .
 
-    --- concatenation is commutative if one gauss code is the empty one 
-    eq G ; [] = G .
-    eq [] ; G = G .
-
     --- REMOVE OPERATION
-    eq remove I from G ; I = G .
-    eq remove I from I ; G = G .
+    eq remove I from NeG ; I = NeG .
+    eq remove I from I ; NeG = NeG .
     eq remove I from G ; (I ; G') = G ; G' .
 
     --- LENGTH OPERATION
-    eq length([]) = 0 .
+    eq length(~) = 0 .
     eq length(I) = 1 .
     eq length(I ; G) = 1 + length(G) .
 
@@ -42,20 +47,20 @@ fmod GAUSS-CODE is
     eq positionOf I in G ; I = length(G) .
     eq positionOf I in G ; (I ; G') = length(G) .
     --- I is not found
-    eq positionOf I in [] = -1 .
+    eq positionOf I in ~ = -1 .
     ceq positionOf I in K = -1 if I =/= K .
     ceq positionOf I in K ; G = -1 if I =/= K .
     ceq positionOf I in G ; K = -1 if I =/= K .
     ceq positionOf I in G ; (K ; G') = -1 if I =/= K .
 
     --- ADD OPERATOR
-    eq add I in K to [] = I .
+    eq add I in K to ~ = I .
     ceq add I in K to G = G ; I if K = length(G) .
     eq add I in 0 to G = I ; G .
     ceq add I in K to G ; G' = G ; (I ; G') if K = length(G) .
 
     --- MOVE OPERATION
-    eq move I to K in G = ( add I in K to ( remove I from G ) ) .
+    eq move I to K in NeG = ( add I in K to ( remove I from NeG ) ) .
  
 
 endfm
