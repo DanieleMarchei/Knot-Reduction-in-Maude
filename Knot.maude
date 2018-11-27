@@ -14,6 +14,7 @@ fmod GAUSS-CODE is
     op remove_from_ : Int NeGauss -> Gauss .
     op length : Gauss -> Int .
     op positionOf_in_ : Int NeGauss -> Int .
+    op add_in_to_ : Int Int Gauss -> NeGauss .
 
     vars G G' : Gauss . 
     var NeG : NeGauss .
@@ -45,6 +46,13 @@ fmod GAUSS-CODE is
     ceq positionOf I in K ; G = -1 if I =/= K .
     ceq positionOf I in G ; K = -1 if I =/= K .
     ceq positionOf I in G ; (K ; G') = -1 if I =/= K .
+
+    --- ADD OPERATOR
+    eq add I in K to [] = I .
+    ceq add I in K to G = G ; I if K = length(G) .
+    ceq add I in K to G = I ; G if K = 0 .
+    ceq add I in K to G ; G' = G ; (I ; G') if K = length(G) .
+
 
 endfm
 
