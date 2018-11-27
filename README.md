@@ -29,6 +29,6 @@ result Gauss: 2 ; 1 ; 3
 ```
 
 ```
-red length(1 ; 2 ; 3)
+red length(1 ; 2 ; 3) .
 result NzNat: 3
 ```
