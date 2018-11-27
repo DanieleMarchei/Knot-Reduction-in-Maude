@@ -15,6 +15,7 @@ fmod GAUSS-CODE is
     op length : Gauss -> Int .
     op positionOf_in_ : Int NeGauss -> Int .
     op add_in_to_ : Int Int Gauss -> NeGauss .
+    op move_to_in_ : Int Int NeGauss -> NeGauss .
 
     vars G G' : Gauss . 
     var NeG : NeGauss .
@@ -50,9 +51,12 @@ fmod GAUSS-CODE is
     --- ADD OPERATOR
     eq add I in K to [] = I .
     ceq add I in K to G = G ; I if K = length(G) .
-    ceq add I in K to G = I ; G if K = 0 .
+    eq add I in 0 to G = I ; G .
     ceq add I in K to G ; G' = G ; (I ; G') if K = length(G) .
 
+    --- MOVE OPERATION
+    eq move I to K in G = ( add I in K to ( remove I from G ) ) .
+ 
 
 endfm
 
