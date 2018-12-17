@@ -1,80 +1,170 @@
 fmod GAUSS-CODE is
 
-    protecting INT .
-    sorts NeGauss Gauss .
+   protecting INT .
+   protecting BOOL .
+   sorts NeGauss Gauss .
 
-    subsorts Int < NeGauss < Gauss .
+   subsorts Int < NeGauss < Gauss .
 
-    op ~ : -> Gauss [ctor] .
+   op ~ : -> Gauss [ctor] .
 
-    op _;_ : Int Int -> NeGauss [assoc id: ~ ctor] .
-    op _;_ : Int Gauss -> NeGauss [ditto] .
-    op _;_ : Gauss Int -> NeGauss [ditto] .
-    op _;_ : Gauss Gauss -> Gauss [ditto] .
+   op _;_ : Int Int -> NeGauss [assoc id: ~ ctor] .
+   op _;_ : Int Gauss -> NeGauss [ditto] .
+   op _;_ : Gauss Int -> NeGauss [ditto] .
+   op _;_ : Gauss Gauss -> Gauss [ditto] .
 
-    op _;_ : Int NeGauss -> NeGauss [ditto] .
-    op _;_ : NeGauss Int -> NeGauss [ditto] .
-    op _;_ : NeGauss NeGauss -> NeGauss [ditto] .
+   op _;_ : Int NeGauss -> NeGauss [ditto] .
+   op _;_ : NeGauss Int -> NeGauss [ditto] .
+   op _;_ : NeGauss NeGauss -> NeGauss [ditto] .
 
-    op _;_ : NeGauss Gauss -> NeGauss [ditto] .
-    op _;_ : Gauss NeGauss -> NeGauss [ditto] .
+   op _;_ : NeGauss Gauss -> NeGauss [ditto] .
+   op _;_ : Gauss NeGauss -> NeGauss [ditto] .
 
 
-    op remove_from_ : Int NeGauss -> Gauss .
-    op length : Gauss -> Int .
-    op positionOf_in_ : Int Gauss -> Int .
-    op add_in_to_ : Int Int Gauss -> NeGauss .
-    op move_to_in_ : Int Int NeGauss -> NeGauss .
+   op remove_from_ : Int NeGauss -> Gauss .
+   op length : Gauss -> Int .
+   op positionOf_in_ : Int Gauss -> Int .
+   op add_in_to_ : Gauss Int Gauss -> NeGauss .
+   op move_to_in_ : Int Int NeGauss -> NeGauss .
+   op next : Gauss -> Gauss .
+   op nextPositive : Gauss -> Gauss .
+   op nextNegative : Gauss -> Gauss .
+   op maxCross : Gauss -> Int .
+   op _adj_in_ : Int Int Gauss -> Bool .
 
-    vars G G' : Gauss . 
-    var NeG : NeGauss .
-    vars I K : Int .
+   vars G G' G'' : Gauss .
+   var NeG : NeGauss .
+   vars I K : Int .
 
-    --- REMOVE OPERATION
-    eq remove I from NeG ; I = NeG .
-    eq remove I from I ; NeG = NeG .
-    eq remove I from G ; (I ; G') = G ; G' .
+   --- REMOVE OPERATION
+   eq remove I from NeG ; I = NeG .
+   eq remove I from I ; NeG = NeG .
+   eq remove I from G ; (I ; G') = G ; G' .
 
-    --- LENGTH OPERATION
-    eq length(~) = 0 .
-    eq length(I) = 1 .
-    eq length(I ; G) = 1 + length(G) .
+   --- LENGTH OPERATION
+   eq length(~) = 0 .
+   eq length(I) = 1 .
+   eq length(I ; G) = 1 + length(G) .
 
-    --- POSITION OPERATION
-    --- I is found
-    eq positionOf I in I = 0 .
-    eq positionOf I in I ; G = 0 .
-    eq positionOf I in G ; I = length(G) .
-    eq positionOf I in G ; (I ; G') = length(G) .
-    --- I is not found
-    eq positionOf I in ~ = -1 .
-    ceq positionOf I in K = -1 if I =/= K .
-    ceq positionOf I in K ; G = -1 if I =/= K .
-    ceq positionOf I in G ; K = -1 if I =/= K .
-    ceq positionOf I in G ; (K ; G') = -1 if I =/= K .
+   --- POSITION OPERATION
+   --- I is found
+   eq positionOf I in I = 0 .
+   eq positionOf I in I ; G = 0 .
+   eq positionOf I in G ; I = length(G) .
+   eq positionOf I in G ; (I ; G') = length(G) .
+   --- I is not found
+   eq positionOf I in ~ = -1 .
+   ceq positionOf I in K = -1 if I =/= K .
+   ceq positionOf I in K ; G = -1 if I =/= K .
+   ceq positionOf I in G ; K = -1 if I =/= K .
+   ceq positionOf I in G ; (K ; G') = -1 if I =/= K .
 
-    --- ADD OPERATOR
-    eq add I in K to ~ = I .
-    ceq add I in K to G = G ; I if K = length(G) .
-    eq add I in 0 to G = I ; G .
-    ceq add I in K to G ; G' = G ; (I ; G') if K = length(G) .
+   --- ADD OPERATOR
+   eq add I in K to ~ = I .
+   ceq add I in K to G = G ; I if K = length(G) .
+   eq add I in 0 to G = I ; G .
+   ceq add I in K to G ; G' = G ; (I ; G') if K = length(G) .
 
-    --- MOVE OPERATION
-    eq move I to K in NeG = ( add I in K to ( remove I from NeG ) ) .
- 
+   ceq add G in K to G' ; G'' = G' ; (G ; G'') if K = length(G') . 
+
+   --- MOVE OPERATION
+   eq move I to K in NeG = ( add I in K to ( remove I from NeG ) ) .
+
+   --- MAXCROSS OPERATION
+   eq maxCross(I) = I .
+   eq maxCross(NeG ; I) = if I > maxCross(NeG) then I else maxCross(NeG) fi .
+   ---eq maxCross(G ; G') = if maxCross(G) > maxCross(G') then maxCross(G) else maxCross(G') fi .
+
+   --- NEXT OPERATION
+   eq next(NeG) = ((maxCross(NeG) + 1) ; - (maxCross(NeG) + 1)) .
+   eq nextPositive(NeG) = maxCross(NeG) + 1 .
+   eq nextNegative(NeG) = - (maxCross(NeG) + 1) .
+
+---ADJACENT OPERATION
+   eq I adj K in (G ; I ; K ; G') = true .
+   eq I adj K in (G ; K ; I ; G') = true .
+   eq I adj K in (I ; G ; G' ; K) = true .
+   eq I adj K in (K ; G ; G' ; I) = true .
+   eq I adj K in NeG = false [owise] .  
 
 endfm
 
+mod R-MOVES is
+   
+   protecting GAUSS-CODE .
+   protecting BOOL .
 
---- Work In Progress
+   op canApplyMove1_for_ : Gauss Int -> Bool .
+   op canApplyMove2_for_and_ : Gauss Int Int -> Bool .
+   op canApplyMove3 : Gauss -> Bool .
 
-fmod KNOT-DEFINITION is
+   op canApplyMove1 : Gauss -> Bool .
 
-    protecting GAUSS-CODE .
+   op sign : Int -> Int .
 
-    sort Knot .
+   vars G G' G'' G''' : Gauss .
+   var NeG : NeGauss .
+   vars I K J Z : Int .
 
-    op unknot : -> Knot .
-    op red : Knot -> Knot .
 
-endfm
+
+   ceq sign(I) = 1 if I > 0 .
+   ceq sign(I) = -1 if I < 0 .
+   
+   --- conditions to verify if the application of a reidemeister move is possible
+   ceq canApplyMove1 (G) for I = true if I adj - I in G = true .
+   eq canApplyMove1(G) for I = false [owise] .
+
+   ceq canApplyMove2(G) for I and K = true if I adj K in G /\ - I adj - K in G = true .
+   eq canApplyMove2(G) for I and K = false [owise] .
+
+   eq canApplyMove3(G ; I ; K ; G' ; - I ; - J ; - K ; J ; G'') = true .
+   eq canApplyMove3(G ; I ; K ; G' ; - J ; - I ; - K ; J ; G'') = true .
+   eq canApplyMove3(G ; I ; J ; G' ; K ; Z ; G'') = false [owise] .   
+
+   eq canApplyMove1(~) = false .
+   eq canApplyMove1(I) = false .
+   eq canApplyMove1(I ; G) = canApplyMove1 G for I or canApplyMove1(G) .
+
+   --- application of move 1 (remove loop)
+   rl [move1a] : (G ; I ; - I ) => G [print "M1a G = " G " I = " I] .
+   rl [move1a] : (G ; - I ; I ) => G [print "M1a G = " G " I = " I] .
+   rl [move1b] : (I ; - I ; G) => G [print "M1b G = " G " I = " I] .
+   rl [move1b] : (- I ; I ; G) => G [print "M1b G = " G " I = " I] .
+   rl [move1c] : (I ; G ; - I) => G [print "M1c G = " G " I = " I] .
+   rl [move1c] : (- I ; G ; I) => G [print "M1c G = " G " I = " I] .
+   rl [move1d] : (G ; I ; - I ; G') => G ; G' [print "M1d G = " G " I = " I] .
+   rl [move1d] : (G ; - I ; I ; G') => G ; G' [print "M1d G = " G " I = " I] .
+
+
+   --- application of inverse of move 1 (add loop)
+   rl [move1Inv] : (G ; NeG) => (G ; next(G ; NeG) ; NeG) [print "M1_Inv G = " G " NeG = " NeG] .
+
+
+   
+   --- application of move 2
+   rl [move2a] : (I ; K ; G ; - I ; - K) => (G) [print "M2a G = " G " I = " I " K = " K] .
+   rl [move2a] : (- I ; - K ; G ; I ; K) => (G) [print "M2a G = " G " I = " I " K = " K] .
+   rl [move2b] : (G ; I ; K ; G' ; - K ; - I ; G'') => (G ; G' ; G'') [print "M2b G = " G " G' = " G' " G'' = " G'' " I = " I " K = " K] .
+   rl [move2b] : (G ; - I ; - K ; G' ; K ; I ; G'') => (G ; G' ; G'') [print "M2b G = " G " G' = " G' " G'' = " G'' " I = " I " K = " K] .
+
+   
+   --- application of inverse of move 2 
+   rl [move2Inva] : (G ; NeG) => (G ; nextPositive(G ; NeG) ; nextPositive(next(G ; NeG)) ; nextNegative(next(G ; NeG)) ; nextNegative(G ; NeG) ; NeG) .
+   rl [move2Invb] : (G ; NeG) => (nextPositive(G ; NeG) ; nextPositive(next(G ; NeG)) ; G ; nextNegative(next(G ; NeG)) ; nextNegative(G ; NeG) ; NeG) .
+   rl [move2Invc] : (G ; NeG) => (nextPositive(G ; NeG) ; nextPositive(next(G ; NeG)) ; nextNegative(next(G ; NeG)) ; nextNegative(G ; NeG) ; G ; NeG) .
+   rl [move2Invd] : (G ; NeG) => (G ; nextPositive(G ; NeG) ; nextPositive(next(G ; NeG)) ; NeG ; nextNegative(next(G ; NeG)) ; nextNegative(G ; NeG)) .
+   
+   --- application of move 3
+   crl [move3a] : (G ; I ; K ; G' ; - I ; - J ; - K ; J ; G'') => (G ; K ; J ; G' ; - I ; - J ; I ; - K ; G'' ) if canApplyMove3(G ; I ; K ; G' ; - I ; - J ; - K ; J ; G'') = true .
+   crl [move3b] : (G ; I ; K ; G' ; - J ; - I ; - K ; J ; G'') => (G ; K ; J ; G' ; - J ; - I ; I ; - K ; G'' ) if canApplyMove3(G ; I ; K ; G' ; - I ; - J ; - K ; J ; G'') = true .
+   
+   --- rule to pass from the gauss code to the unknot
+   crl [unknot] : G => ~ if length(G) = 0 .
+   
+   --- necessary but not sufficient condition for having a minimum knot
+   --- crl [minknot] : G => G if canApplyMove1(G) = false /\ canApplyMove2(G) = false /\ length(G) > 0 .
+
+endm
+
+
