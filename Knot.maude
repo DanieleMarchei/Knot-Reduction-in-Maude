@@ -127,38 +127,44 @@ mod R-MOVES is
    eq canApplyMove1(I ; G) = canApplyMove1 G for I or canApplyMove1(G) .
 
    --- application of move 1 (remove loop)
-   rl [move1a] : (G ; I ; - I ) => G [print "M1a G = " G " I = " I] .
-   rl [move1a] : (G ; - I ; I ) => G [print "M1a G = " G " I = " I] .
-   rl [move1b] : (I ; - I ; G) => G [print "M1b G = " G " I = " I] .
-   rl [move1b] : (- I ; I ; G) => G [print "M1b G = " G " I = " I] .
-   rl [move1c] : (I ; G ; - I) => G [print "M1c G = " G " I = " I] .
-   rl [move1c] : (- I ; G ; I) => G [print "M1c G = " G " I = " I] .
-   rl [move1d] : (G ; I ; - I ; G') => G ; G' [print "M1d G = " G " I = " I] .
-   rl [move1d] : (G ; - I ; I ; G') => G ; G' [print "M1d G = " G " I = " I] .
-
+   ---rl [move1a] : G ; I ; - I => G [print "M1a G = " G " I = " I] .
+   ---rl [move1a] : G ; - I ; I => G [print "M1a G = " G " I = " I] .
+   ---rl [move1b] : I ; - I ; G => G [print "M1b G = " G " I = " I] .
+   ---rl [move1b] : - I ; I ; G => G [print "M1b G = " G " I = " I] .
+   ---rl [move1c] : I ; G ; - I => G [print "M1c G = " G " I = " I] .
+   ---rl [move1c] : - I ; G ; I => G [print "M1c G = " G " I = " I] .
+   ---rl [move1d] : G ; I ; - I ; G' => G ; G' [print "M1d G = " G " I = " I] .
+   rl [move1] : - I ; I => ~ .
+   rl [move1] : I ; - I => ~ .
 
    --- application of inverse of move 1 (add loop)
-   rl [move1Inv] : (G ; NeG) => (G ; next(G ; NeG) ; NeG) [print "M1_Inv G = " G " NeG = " NeG] .
+   ---rl [move1Inv] : G ; NeG => G ; next(G ; NeG) ; NeG [print "M1_Inv G = " G " NeG = " NeG] .
 
 
    
    --- application of move 2
-   rl [move2a] : (I ; K ; G ; - I ; - K) => (G) [print "M2a G = " G " I = " I " K = " K] .
-   rl [move2a] : (- I ; - K ; G ; I ; K) => (G) [print "M2a G = " G " I = " I " K = " K] .
-   rl [move2b] : (G ; I ; K ; G' ; - K ; - I ; G'') => (G ; G' ; G'') [print "M2b G = " G " G' = " G' " G'' = " G'' " I = " I " K = " K] .
-   rl [move2b] : (G ; - I ; - K ; G' ; K ; I ; G'') => (G ; G' ; G'') [print "M2b G = " G " G' = " G' " G'' = " G'' " I = " I " K = " K] .
+   ---rl [move2a] : I ; K ; G ; - I ; - K => G [print "M2a G = " G " I = " I " K = " K] .
+   ---rl [move2a] : - I ; - K ; G ; I ; K => G [print "M2a G = " G " I = " I " K = " K] .
+   rl [move2] : I ; K ; G' ; - K ; - I => G' .
+   rl [move2] : - I ; - K ; G' ; K ; I => G' .
 
    
    --- application of inverse of move 2 
-   rl [move2Inva] : (G ; NeG) => (G ; nextPositive(G ; NeG) ; nextPositive(next(G ; NeG)) ; nextNegative(next(G ; NeG)) ; nextNegative(G ; NeG) ; NeG) .
-   rl [move2Invb] : (G ; NeG) => (nextPositive(G ; NeG) ; nextPositive(next(G ; NeG)) ; G ; nextNegative(next(G ; NeG)) ; nextNegative(G ; NeG) ; NeG) .
-   rl [move2Invc] : (G ; NeG) => (nextPositive(G ; NeG) ; nextPositive(next(G ; NeG)) ; nextNegative(next(G ; NeG)) ; nextNegative(G ; NeG) ; G ; NeG) .
-   rl [move2Invd] : (G ; NeG) => (G ; nextPositive(G ; NeG) ; nextPositive(next(G ; NeG)) ; NeG ; nextNegative(next(G ; NeG)) ; nextNegative(G ; NeG)) .
+   rl [move2Inv] : G ; NeG => G ; nextPositive(G ; NeG) ; nextPositive(next(G ; NeG)) ; nextNegative(next(G ; NeG)) ; nextNegative(G ; NeG) ; NeG .
+   rl [move2Inv] : G ; NeG => nextPositive(G ; NeG) ; nextPositive(next(G ; NeG)) ; G ; nextNegative(next(G ; NeG)) ; nextNegative(G ; NeG) ; NeG .
+   rl [move2Inv] : G ; NeG => nextPositive(G ; NeG) ; nextPositive(next(G ; NeG)) ; nextNegative(next(G ; NeG)) ; nextNegative(G ; NeG) ; G ; NeG .
+   rl [move2Inv] : G ; NeG => G ; nextPositive(G ; NeG) ; nextPositive(next(G ; NeG)) ; NeG ; nextNegative(next(G ; NeG)) ; nextNegative(G ; NeG) .
    
    --- application of move 3
-   crl [move3a] : (G ; I ; K ; G' ; - I ; - J ; - K ; J ; G'') => (G ; K ; J ; G' ; - I ; - J ; I ; - K ; G'' ) if canApplyMove3(G ; I ; K ; G' ; - I ; - J ; - K ; J ; G'') = true .
-   crl [move3b] : (G ; I ; K ; G' ; - J ; - I ; - K ; J ; G'') => (G ; K ; J ; G' ; - J ; - I ; I ; - K ; G'' ) if canApplyMove3(G ; I ; K ; G' ; - I ; - J ; - K ; J ; G'') = true .
+   ---crl [move3a] : G ; I ; K ; G' ; - I ; - J ; - K ; J ; G'' => G ; K ; J ; G' ; - I ; - J ; I ; - K ; G''  if canApplyMove3(G ; I ; K ; G' ; - I ; - J ; - K ; J ; G'') = true .
+   ---crl [move3b] : G ; I ; K ; G' ; - J ; - I ; - K ; J ; G'' => G ; K ; J ; G' ; - J ; - I ; I ; - K ; G''  if canApplyMove3(G ; I ; K ; G' ; - I ; - J ; - K ; J ; G'') = true .
    
+   rl [move3] : G ;   I ;   K ; G' ; - K ;   J ; G'' => G ;   K ;   J ; G' ;   I ; - K ; G'' .
+   rl [move3] : G ; - I ;   K ; G' ; - K ; - J ; G'' => G ;   K ; - J ; G' ; - I ; - K ; G'' .
+   rl [move3] : G ;   I ; - K ; G' ;   K ;   J ; G'' => G ; - K ;   J ; G' ;   I ;   K ; G'' .
+   rl [move3] : G ; - I ; - K ; G' ;   K ; - J ; G'' => G ; - K ; - J ; G' ; - I ;   K ; G'' .
+
+
    --- rule to pass from the gauss code to the unknot
    crl [unknot] : G => ~ if length(G) = 0 .
    
