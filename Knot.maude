@@ -31,6 +31,9 @@ fmod GAUSS-CODE is
    op nextNegative : Gauss -> Gauss .
    op maxCross : Gauss -> Int .
    op _adj_in_ : Int Int Gauss -> Bool .
+   op shiftL : NeGauss -> NeGauss .
+   op shiftR : NeGauss -> NeGauss .
+
 
    vars G G' G'' : Gauss .
    var NeG : NeGauss .
@@ -85,7 +88,12 @@ fmod GAUSS-CODE is
    eq I adj K in (G ; K ; I ; G') = true .
    eq I adj K in (I ; G ; G' ; K) = true .
    eq I adj K in (K ; G ; G' ; I) = true .
-   eq I adj K in NeG = false [owise] .  
+   eq I adj K in NeG = false [owise] .
+
+   eq shiftL(I) = I .
+   eq shiftL(I ; G) = G ; I .
+   eq shiftR(I) = I .
+   eq shiftR(G ; I) = I ; G .
 
 endfm
 
@@ -126,6 +134,11 @@ mod R-MOVES is
    eq canApplyMove1(I) = false .
    eq canApplyMove1(I ; G) = canApplyMove1 G for I or canApplyMove1(G) .
 
+
+   ---shifting the gauss code
+   ---rl [shiftL] : NeG => shiftL(NeG) .
+   ---rl [shiftR] : NeG => shiftR(NeG) .
+
    --- application of move 1 (remove loop)
    ---rl [move1a] : G ; I ; - I => G [print "M1a G = " G " I = " I] .
    ---rl [move1a] : G ; - I ; I => G [print "M1a G = " G " I = " I] .
@@ -138,7 +151,7 @@ mod R-MOVES is
    rl [move1] : I ; - I => ~ .
 
    --- application of inverse of move 1 (add loop)
-   ---rl [move1Inv] : G ; NeG => G ; next(G ; NeG) ; NeG [print "M1_Inv G = " G " NeG = " NeG] .
+   rl [move1Inv] : G ; NeG => G ; next(G ; NeG) ; NeG .
 
 
    
@@ -159,10 +172,10 @@ mod R-MOVES is
    ---crl [move3a] : G ; I ; K ; G' ; - I ; - J ; - K ; J ; G'' => G ; K ; J ; G' ; - I ; - J ; I ; - K ; G''  if canApplyMove3(G ; I ; K ; G' ; - I ; - J ; - K ; J ; G'') = true .
    ---crl [move3b] : G ; I ; K ; G' ; - J ; - I ; - K ; J ; G'' => G ; K ; J ; G' ; - J ; - I ; I ; - K ; G''  if canApplyMove3(G ; I ; K ; G' ; - I ; - J ; - K ; J ; G'') = true .
    
-   rl [move3] : G ;   I ;   K ; G' ; - K ;   J ; G'' => G ;   K ;   J ; G' ;   I ; - K ; G'' .
-   rl [move3] : G ; - I ;   K ; G' ; - K ; - J ; G'' => G ;   K ; - J ; G' ; - I ; - K ; G'' .
-   rl [move3] : G ;   I ; - K ; G' ;   K ;   J ; G'' => G ; - K ;   J ; G' ;   I ;   K ; G'' .
-   rl [move3] : G ; - I ; - K ; G' ;   K ; - J ; G'' => G ; - K ; - J ; G' ; - I ;   K ; G'' .
+   rl [move3] :   I ;   K ; NeG ; - K ;   J =>   K ;   J ; NeG ;   I ; - K .
+   rl [move3] : - I ;   K ; NeG ; - K ; - J =>   K ; - J ; NeG ; - I ; - K .
+   rl [move3] :   I ; - K ; NeG ;   K ;   J => - K ;   J ; NeG ;   I ;   K .
+   rl [move3] : - I ; - K ; NeG ;   K ; - J => - K ; - J ; NeG ; - I ;   K .
 
 
    --- rule to pass from the gauss code to the unknot
