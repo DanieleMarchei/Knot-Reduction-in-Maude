@@ -2,33 +2,26 @@
 
 Maude project for the Fundamentals of Reactive Systems course at Unicam.
 
-Examples:
+## Usage
+Load the file in maude
 ```
-red 1 ; 2 ; 3 .
-result Gauss: 1 ; 2 ; 3
+$ maude Knot.maude
 ```
-
+Then run the following command to reduce a knot.
 ```
-red remove 1 from 1 ; 2 ; 3 .
-result NeGauss: 2 ; 3
+Maude> search [1] in R-MOVES : G =>+ ~ .
 ```
-
+Where __G__ is the Gauss Code relative to the knot to be reduced.
+Example:
 ```
-red positionOf 2 in 1 ; 2 ; 3 .
-result NzNat: 1
-```
-
-```
-red add 2 in 1 to 1 ; 3 ; 4 .
-result Gauss: 1 ; 2 ; 3 ; 4
+Maude> search [1] in R-MOVES : -2 ; -3 ; 1 ; -1 ; -4 ; 4 ; 2 ; 3 =>+ ~ .
 ```
 
+The output will be something like that
 ```
-red move 2 to 0 in 1 ; 2 ; 3 .
-result Gauss: 2 ; 1 ; 3
-```
+search [1] in R-MOVES : -2 ; -3 ; 1 ; -1 ; -4 ; 4 ; 2 ; 3 =>+ ~ .
 
-```
-red length(1 ; 2 ; 3) .
-result NzNat: 3
+Solution 1 (state 41519)
+states: 41520  rewrites: 12536251 in 0ms cpu (4100ms real) (~ rewrites/second)
+empty substitution
 ```
